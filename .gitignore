@@ -3,3 +3,4 @@ __pycache__/
 .env
 *.zip
 pendientes_parte*.txt
+data/bronce/
