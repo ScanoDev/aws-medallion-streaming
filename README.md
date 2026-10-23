@@ -130,17 +130,21 @@ Consultas: `medallion/sql/04_oro/`
 
 ## 6. Comparación
 
-Misma consulta en las tres capas: ¿cuántas páginas tiene cada sección del sitio?
+Misma consulta en las tres capas: ¿cuántas páginas tiene cada sección del sitio? Las tres devuelven el mismo resultado.
 
 | Capa | Tabla | Formato | Datos escaneados | Tiempo |
 |---|---|---|---:|---:|
-| Bronce | `bronce_tokens` | TSV | POR MEDIR | POR MEDIR |
-| Plata | `plata_tokens_validos` | Parquet (Iceberg) | POR MEDIR | POR MEDIR |
-| Oro | `oro_fragmentos` | Parquet (Iceberg) | POR MEDIR | POR MEDIR |
+| Bronce | `bronce_tokens` | TSV | 314,52 MB | 1,25 s |
+| Plata | `plata_tokens_validos` | Parquet (Iceberg) | 397,55 KB | 1,16 s |
+| Oro | `oro_fragmentos` | Parquet (Iceberg) | 48,97 KB | 1,42 s |
 
-**Interpretación:** en bronce, Athena debe leer el archivo de texto completo aunque la consulta solo use dos columnas. Plata está en Parquet, un formato por columnas y comprimido: Athena lee solo `url` y `pagina_id`, que además se comprimen muy bien porque se repiten en cada token de la misma página. Oro tiene apenas 5.446 filas porque ya está agregado. Menos bytes escaneados significa consultas más rápidas y más baratas, porque Athena cobra por datos escaneados.
+**Interpretación**
 
-Consultas: `medallion/sql/05_comparacion/`
+1. **Los bytes bajan unas 800 veces de bronce a plata.** Bronce es texto: Athena debe leer el archivo completo aunque la consulta solo use dos columnas. Plata está en Parquet, un formato por columnas y comprimido, así que Athena lee solo `url` y `pagina_id`, que además se comprimen muy bien porque se repiten en cada token de una misma página.
+2. **Y unas 8 veces más de plata a oro**, porque oro ya está agregado: 5.446 filas en lugar de 987.442. En total, oro escanea unas 6.500 veces menos que bronce.
+3. **El tiempo casi no cambia (entre 1,2 y 1,4 s).** Con este volumen, el tiempo lo domina el costo fijo de cada consulta (planearla, asignar recursos y, en Iceberg, leer sus archivos de metadatos), no la lectura: Athena lee 314 MB en paralelo en milisegundos. Las diferencias de tiempo entre capas son ruido de una ejecución a otra.
+4. **Lo que sí cambia es el costo.** Athena cobra por datos escaneados (con un mínimo de 10 MB por consulta): la consulta a bronce se cobra por 314,52 MB, y las de plata y oro por el mínimo de 10 MB, unas 31 veces menos.
+5. **Con datos mil veces mayores** (unos 314 GB en bronce), la lectura sí dominaría el tiempo, y la diferencia entre capas se vería también en la velocidad.
 
 ## Pregunta final: si los datos fueran mil veces mayores, ¿qué cambiaríamos?
 
