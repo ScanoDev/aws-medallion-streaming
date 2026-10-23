@@ -6,7 +6,7 @@ WITH (
   table_type = 'ICEBERG',
   is_external = false,
   format = 'PARQUET',
-  location = 's3://TU-BUCKET/plata/tokens_rechazados/'
+  location = 's3://medallion-eafit-2026-orion/plata/tokens_rechazados/'
 ) AS
 SELECT
   pagina_id,

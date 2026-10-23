@@ -6,7 +6,7 @@ super descripción que aun debo hacer
 asdasd
 
 ## Punto 2
-sdsdf
+Sabemos que glue se encarga de encontrar la estructura de las tablas o de los datos que le demos, y también que Athena utiliza Glue por defecto, sin embargo, en este caso glue no detecta la estructura de manera automática, para eso tendríamos que usar glue crawler, el cual se cobra a parte.
 
 ## Punto 3
 Se encontraron los siguientes hallazgos por medio de las consultas sql.
