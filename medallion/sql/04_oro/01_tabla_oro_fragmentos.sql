@@ -20,11 +20,11 @@ WITH numerados AS (
   FROM eafit_medallion.plata_tokens_validos
 )
 SELECT
-  split_part(url, '/', 4)                                   AS seccion,
+  split_part(url, '/', 4) AS seccion,
   pagina_id,
   url,
-  CAST((n - 1) / 200 + 1 AS integer)                        AS numero_fragmento,
-  CAST(count(*) AS integer)                                 AS n_tokens,
+  CAST((n - 1) / 200 + 1 AS integer) AS numero_fragmento,
+  CAST(count(*) AS integer) AS n_tokens,
   array_join(array_agg(token_limpio ORDER BY posicion), ' ') AS texto
 FROM numerados
 GROUP BY 1, 2, 3, 4;

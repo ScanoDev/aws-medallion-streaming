@@ -1,4 +1,4 @@
--- Comparación: ¿cuántas páginas tiene cada sección del sitio? (capa bronce)
+-- Comparación: ¿cuántas páginas tiene cada sección del sitio? (capa plata)
 SELECT split_part(url, '/', 4) AS seccion, count(DISTINCT pagina_id) AS paginas
 FROM eafit_medallion.plata_tokens_validos
 GROUP BY 1

@@ -102,7 +102,7 @@ def main():
         r = None
         for intento in range(4):
             try:
-                r = pedir(url, a.api_key if False else api_key)
+                r = pedir(url, api_key)
             except requests.RequestException as e:
                 print(f"[{i}] error de red (intento {intento + 1}): {e}")
                 r = None
